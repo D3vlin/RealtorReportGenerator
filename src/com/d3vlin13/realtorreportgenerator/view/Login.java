@@ -84,8 +84,8 @@ public final class Login {
 			Printer.printError("Debe ingresar usuario y contraseña");
 			
 		} else {
-			if(FileExplorer.existsFile("data/users.txt")) {
-				if(FileExplorer.searchInEncryptFile("data/users.txt", userType.getIntValue() + "," + currentUser.getUsername() + "," + currentUser.getPassword())) {
+			if(FileExplorer.existsFile(FileExplorer.FILE_PATH_USERS)) {
+				if(FileExplorer.searchInEncryptFile(FileExplorer.FILE_PATH_USERS, userType.getIntValue() + "," + currentUser.getUsername() + "," + currentUser.getPassword())) {
 					Printer.printInformation("Iniciando sesion...");
 					return true;
 				
@@ -97,7 +97,8 @@ public final class Login {
 				Printer.printError("Error al conectar a la base de datos de usuarios");
 			}
 		}
-		
+
+		Printer.printInformation("Cerrando sistema...");
 		return false;
 	}
 }

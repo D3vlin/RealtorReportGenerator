@@ -17,6 +17,12 @@ final class Font {
 		MAGENTA("\u001B[35m"),
 		CYAN("\u001B[36m"),
 		WHITE("\u001B[37m"),
+		BKRED("\\u001B[41m"),
+		BKGREEN("\\u001B[42m"),
+		BKYELLOW("\\u001B[43m"),
+		BKBLUE("\u001B[44m"),
+		BKMAGENTA("\\u001B[45m"),
+		BKCYAN("\u001B[46m"),
 		BKWHITE("\u001B[47m"),
 		GREY("\u001B[90m");
 		

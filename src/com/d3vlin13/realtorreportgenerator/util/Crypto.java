@@ -12,21 +12,30 @@ import javax.crypto.spec.GCMParameterSpec;
 
 public final class Crypto {
 	
-	public static SecretKey generateSecretKey() throws NoSuchAlgorithmException {
-        // Usar una instancia específica de SecureRandom con la semilla
-		String seed = "RealtorReportGenerator";
+	private static final SecretKey SECRET_KEY = generateSecretKey();
+	
+	private static SecretKey generateSecretKey() {
+        try {
+            // Usar una instancia específica de SecureRandom con la semilla
+            String seed = "RealtorReportGenerator";
 
-        // Usar KeyGenerator para generar una clave AES
-        KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
-        keyGenerator.init(256, new SecureRandom(seed.getBytes()));
+            // Usar KeyGenerator para generar una clave AES
+            KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
+            keyGenerator.init(256, new SecureRandom(seed.getBytes()));
 
-        // Generar y devolver la clave
-        return keyGenerator.generateKey();
+            // Generar y devolver la clave
+            return keyGenerator.generateKey();
+            
+        } catch (NoSuchAlgorithmException e) {
+            // Manejar la excepción, puedes imprimir un mensaje de error o lanzar una RuntimeException
+            e.printStackTrace();
+            throw new RuntimeException("Error al generar la clave AES", e);
+        }
     }
 	
-	public static String encrypt(String plainText, SecretKey secretKey) throws Exception {
+	public static String encrypt(String plainText) throws Exception {
         Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding/");
-        cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+        cipher.init(Cipher.ENCRYPT_MODE, SECRET_KEY);
 
         byte[] iv = cipher.getIV();
         byte[] cipherText = cipher.doFinal(plainText.getBytes());
@@ -39,7 +48,7 @@ public final class Crypto {
         return Base64.getEncoder().encodeToString(combined);
     }
 	
-	public static String decrypt(String encryptedText, SecretKey secretKey) throws Exception {
+	public static String decrypt(String encryptedText) throws Exception {
         Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
 
         // Decodifica la cadena base64
@@ -53,7 +62,7 @@ public final class Crypto {
         byte[] cipherText = new byte[combined.length - 12];
         System.arraycopy(combined, 12, cipherText, 0, cipherText.length);
 
-        cipher.init(Cipher.DECRYPT_MODE, secretKey, new GCMParameterSpec(128, iv));
+        cipher.init(Cipher.DECRYPT_MODE, SECRET_KEY, new GCMParameterSpec(128, iv));
         byte[] plainText = cipher.doFinal(cipherText);
 
         return new String(plainText);
